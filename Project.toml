@@ -1,0 +1,7 @@
+name = "NLCE"
+uuid = "58ed8719-ccf6-46d7-a1d1-f7eb2de13c48"
+authors = ["Markus Pirke <markus.pirke@web.de>"]
+version = "0.1.0"
+
+[deps]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
