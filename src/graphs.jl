@@ -114,7 +114,7 @@ which we need to calculate the reduced energies
 """
 function subgraph_embeddings(filename::String, cluster::Cluster)
 
-    location = MPDemo.get_location(filename)
+    location = get_location(filename)
     df = CSV.read(string(location, "Subgraphs", cluster.name), DataFrame, header=["name", "em", "aut"])
 
     names = df[!, 1]
