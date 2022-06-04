@@ -108,6 +108,84 @@ function get_order(filename::String)
     end
 end
 
+function no_odd(arr) # check that no odd elements are in arr
+	for i in arr
+		if i % 2 == 1
+			return false
+		end
+	end
+	return true
+end
+
+function get_order_matthias(filename)
+	file = open(filename, "r")
+	num_bonds = 0
+	graph = []
+
+	#Read first line which encodes number of sites
+	line1 = readline(file)
+	num_sites = parse(UInt64, line1)
+
+	degrees = [0 for x=1:num_sites] # Initialize array to save degrees of vertices (i.e. the number of neighbours)
+
+	# Second line is just a dummy parameter
+	line2 = readline(file)
+
+	lines = readlines(file)
+
+	# Read the rest of the file line by line. Just split each line and put the second and third number into an array. If semicolon is appended remove it.
+	# Surely, you can do this much better.
+	for line in lines
+
+		if length(line) != 0 && line[1] != '#'
+			sites = split(line, ' ')
+			
+			src =  parse(UInt64, sites[2])
+			if last(sites[3]) == ';'
+				tar = parse(UInt64, chop(sites[3]))
+			else
+				tar =  parse(UInt64, sites[3])
+			end	
+			
+			bond = [src, tar]
+			degrees[src+1] += 1
+			degrees[tar+1] += 1
+			num_bonds += 1
+			push!(graph, bond)
+		end
+	end
+
+	# Will be the minimum number of edges/bonds, which have to be duplicated s.t. no vertex of odd degree remains
+	m = copy(num_bonds)
+
+	# Use bit representation of numbers from 0 to num_bonds^(2-1) interpret 1 as bond is duplicated and 0 as bond is not duplicated.
+	# Dynamic degree holds the resulting degrees. No_odd checks if a solution has been found.
+
+
+	for i in 0:(2^num_bonds-1) 
+		added_bonds = count_ones(i)
+		if added_bonds < m
+			dynamic_degrees = copy(degrees)
+			bits = last(bitstring(i), num_bonds)	
+			if added_bonds < m
+				for i in 1:num_bonds
+					if bits[i] == '1'
+						for site in graph[i]				
+							dynamic_degrees[site+1]+=1
+						end
+					end
+				end
+			end	
+			if no_odd(dynamic_degrees) && added_bonds <= m
+				m = copy(added_bonds) 
+			end
+		end
+	end
+
+	return m+num_bonds
+end
+
+
 """
 Input filename and the cluster for that filename and return all indices of Subgraphs
 which we need to calculate the reduced energies
@@ -131,7 +209,7 @@ Takes filepath and return a datatype Cluster with all properties of the graph.
 """
 function create_cluster(filename::String)
     name = graph_name(filename)
-    order = get_order(filename)
+    order = get_order_matthias(filename)
     sites = number_sites(filename)
     bs = bonds(filename)
 
