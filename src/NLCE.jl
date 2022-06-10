@@ -1,5 +1,6 @@
 module NLCE
 
+include("types.jl")
 include("functions.jl")
 include("graphs.jl")
 include("operators.jl")
