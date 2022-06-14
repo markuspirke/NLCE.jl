@@ -11,6 +11,7 @@ Cluster type with number sites, bonds, embedding factor and string name.
 J interaction strength
 magnet: +1 ferromagnet -1 antiferromagnet
 """
+
 function tfim(C::Cluster, J::Float64, magnet::Int64)
     Z = [1 0; 0 -1] |> sparse
     X = [0 1; 1 0] |> sparse
@@ -39,14 +40,13 @@ function tfim(C::Cluster, J::Float64, magnet::Int64)
     end
 
     for i in 1:N
-        H -= magnet * foldl(⊗, field)
+        H -= foldl(⊗, field)
         field = circshift(field, 1)
     end
     H += N * foldl(⊗, interaction)
 
     H
 end
-
 """
 N numbers of sites. J strength of interaction between neighbouring sites. 
 Creates H = J Σ XX' +  Σ Z with open boundary conditions. H is represented as a sparse matrix.
