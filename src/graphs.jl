@@ -195,7 +195,6 @@ function subgraph_embeddings(filename::String, cluster::Cluster)
 
     embeddings
 end
-
 """
 Takes filepath and return a datatype Cluster with all properties of the graph.
 """
@@ -208,4 +207,15 @@ function create_cluster(filename::String)
     C = monomorphism(filename) / automorphism(filename)
 
     cluster = Cluster(name, order, sites, bs, C)
+end
+
+function create_cluster_BIG(filename::String)
+    name = graph_name(filename)
+    order = get_order_matthias(filename)
+    sites = number_sites(filename)
+    bs = bonds(filename)
+
+    C = BigFloat(monomorphism(filename) / automorphism(filename))
+
+    cluster = ClusterBIG(name, order, sites, bs, C)
 end
