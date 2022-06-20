@@ -13,6 +13,6 @@ function energyspectrum_BIG(H, n::Int64, ϵ)
 
     E = decomp.eigenvalues[n] |> real
 
-    return BigFloat(E)
+    return BigFloat.(E)
 end
 

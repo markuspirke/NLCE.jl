@@ -62,7 +62,7 @@ end
 """
 Takes filepath as input and return the order in pertubation theory of the graph. 
 """
-function get_order(filename::String)
+function get_order_graphs(filename::String)
     #number of sites
     N = number_sites(filename)
     #bs vector of tuples of bonds
@@ -195,6 +195,20 @@ function subgraph_embeddings(filename::String, cluster::Cluster)
 
     embeddings
 end
+
+function subgraph_embeddings_BIG(filename::String, cluster::Cluster)
+
+    location = get_location(filename)
+    df = CSV.read(string(location, "Subgraphs", cluster.name), DataFrame, header=["name", "em", "aut"])
+
+    names = df[!, 1]
+    names_split = split.(names, "-")
+    N = parse.(Int, [name[1] for name in names_split]) .+ 2
+
+    embeddings = [(N[i], BigFloat(df[!, 2][i] / df[!, 3][i])) for i in 1:length(N)]
+
+    embeddings
+end
 """
 Takes filepath and return a datatype Cluster with all properties of the graph.
 """
@@ -215,7 +229,7 @@ function create_cluster_BIG(filename::String)
     sites = number_sites(filename)
     bs = bonds(filename)
 
-    C = BigFloat(monomorphism(filename) / automorphism(filename))
+    C = BigFloat(monomorphism(filename)) / BigFloat(automorphism(filename))
 
     cluster = ClusterBIG(name, order, sites, bs, C)
 end
