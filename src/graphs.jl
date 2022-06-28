@@ -220,6 +220,7 @@ function create_cluster(filename::String)
 
     C = monomorphism(filename) / automorphism(filename)
 
+    #cluster = Cluster64(order, sites, bs, C)
     cluster = Cluster64(name, order, sites, bs, C)
 end
 
